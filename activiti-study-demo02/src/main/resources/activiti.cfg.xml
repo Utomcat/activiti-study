@@ -1,0 +1,34 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--配置spring的数据源-->
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="url" value="jdbc:mysql://localhost:3306/activity?useUnicode=true&amp;characterEncoding=UTF-8&amp;userSSL=false&amp;serverTimezone=GMT%2B8"/>
+        <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
+        <property name="username" value="root"/>
+        <property name="password" value="123456"/>
+    </bean>
+
+    <bean id="processEngineConfiguration" class="org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration">
+
+        <!--直接设置数据源-->
+        <!--<property name="jdbcUrl" value="jdbc:mysql://localhost:3306/activity?useUnicode=true&amp;characterEncoding=UTF-8&amp;userSSL=false&amp;serverTimezone=GMT%2B8" />
+        <property name="jdbcDriver" value="com.mysql.cj.jdbc.Driver" />
+        <property name="jdbcUsername" value="root" />
+        <property name="jdbcPassword" value="123456" />-->
+
+        <!--使用spring进行配置 数据源后，此处的数据源配置可以使用如下的方式-->
+        <property name="dataSource" ref="dataSource"/>
+
+
+        <!--等同于JAVA代码  processEngineConfiguration.setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE);-->
+        <property name="databaseSchemaUpdate" value="true" />
+
+        <!--<property name="asyncExecutorActivate" value="false" />
+
+        <property name="mailServerHost" value="mail.my-corp.com" />
+        <property name="mailServerPort" value="5025" />-->
+    </bean>
+
+</beans>
