@@ -6,8 +6,9 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentQuery;
+import org.activiti.engine.repository.ProcessDefinition;
 
-import java.io.InputStream;
+import java.io.*;
 import java.util.List;
 import java.util.zip.ZipInputStream;
 
@@ -38,7 +39,10 @@ public class ManagementProcessDef {
         //managementProcessDef.queryProcessDeployment();
 
         //流程定义的查询
-        managementProcessDef.queryProcessDef();
+        //managementProcessDef.queryProcessDef();
+
+        //查询流程图
+        managementProcessDef.queryProcessImg();
 
 
     }
@@ -295,8 +299,32 @@ public class ManagementProcessDef {
     public void queryProcessImg(){
 
         RepositoryService repositoryService = this.processEngine.getRepositoryService();
-        //repositoryService.getResourceAsStream()
 
+        String processDefinitionId = "HelloWorld:2:12504";
+        ProcessDefinition processDefinition = repositoryService.getProcessDefinition(processDefinitionId);
+        String diagramResourceName = processDefinition.getDiagramResourceName();
+
+
+        /**
+         * 获得对应流程的bpmn文件
+         */
+        InputStream processModel = repositoryService.getProcessModel(processDefinitionId);
+        String fileName = repositoryService.getProcessDefinition(processDefinitionId).getResourceName();
+        //log.info("流程图名称为 ===> "+fileName);
+        File bpmFile = new File("E:\\Work\\IdeaWorkSpace\\activiti\\activiti-study\\activiti-study-demo01\\model\\" + fileName);
+        try {
+            BufferedOutputStream bufferedOutputStream2 = new BufferedOutputStream(new FileOutputStream(bpmFile));
+            int length = 0;
+            byte[] b = new byte[1024];
+            while ((length=processModel.read(b)) != -1){
+                bufferedOutputStream2.write(b,0,length);
+                bufferedOutputStream2.flush();
+            }
+            bufferedOutputStream2.close();
+            processModel.close();
+        } catch ( IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
